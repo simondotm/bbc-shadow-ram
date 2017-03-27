@@ -9,6 +9,24 @@ ORG &0E00
 
 .start
 
+; check if host machine is a Master 128
+; we do this by testing if memory address &C000 is writable
+; returns z=0 if master 128
+;         z=1 if not 
+.check_master
+{
+    sei
+    lda &c000
+    tay
+    eor #&ff
+    tax
+    sta &c000
+    cpx &c000
+    sty &c000
+    cli
+    rts
+}
+
 ; Fill a teletext screen (1Kb) with a given character
 ; on entry A=character, X=memory address msb to write 
 .fill_screen
@@ -48,9 +66,24 @@ ORG &0E00
     rts
 }
 
-
+.error_text EQUS "Compatible with BBC Master 128 Only", 13, 10, 0
 .entry
 {
+    jsr check_master
+    beq ok
+
+    ldx #0
+.loop
+    lda error_text,x
+    beq quit
+    jsr &ffee
+    inx
+    bne loop
+.quit
+    rts
+
+.ok
+
     ; switch to mode 7 (teletext)
     lda #22
     jsr &ffee
