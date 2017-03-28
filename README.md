@@ -26,7 +26,7 @@ Some code for a BBC Master 128 to prototype double buffered rendering using Shad
 ; Bit 0 - D - CRTC RAM Source select
 
 
-; D=0 Use Shadow RAM for screen, D=1 Use main memory for screen
+; D=0 Use main memory for screen, D=1 Use Shadow RAM for screen (contrary to what is specified in AUG)
 ; E=0 VDU Driver uses Shadow RAM, E=1 VDU Driver uses main memory
 ; X=0 Normal RAM in main memory, X=1 Shadow RAM in main memory
 ; Y=0 8K RAM at &C000 to &DFFF, Y=1 VDU Driver code at &C000
@@ -36,8 +36,8 @@ Some code for a BBC Master 128 to prototype double buffered rendering using Shad
 ; IRR=0 after IRQ processed, IRR=1 IRQ to CPU
 
 ; so double buffer rendering works as follows:
-;   D=1,X=1 - Display from main memory, Draw to shadow memory (&3000-&7FFF)
-;   D=0,X=0 - Display from shadow memory, Draw to main memory (&3000-&7FFF)
+;   D=0,X=1 - Display from main memory, Draw to shadow memory (&3000-&7FFF)
+;   D=1,X=0 - Display from shadow memory, Draw to main memory (&3000-&7FFF)
 
 
 ```

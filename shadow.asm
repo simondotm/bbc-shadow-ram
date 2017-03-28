@@ -49,7 +49,8 @@ ORG &0E00
 .shadow_init_buffers
 {
     lda &fe34
-    ora #1+4    ; set D and X to 1
+    ora #4    	; set X to 1
+    and #255-1  ; set D to 0
     and #255-8  ; set Y to 0, so that the 8Kb Buffer can be used as RAM
     sta &fe34
     rts
@@ -61,7 +62,7 @@ ORG &0E00
 .shadow_swap_buffers
 {
     lda &fe34
-    eor #1+4
+    eor #1+4	; invert bits 0 & 2
     sta &fe34
     rts
 }
