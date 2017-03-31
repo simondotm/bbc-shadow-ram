@@ -1,6 +1,7 @@
 # bbc-shadow-ram
 Some code for a BBC Master 128 to prototype double buffered rendering using Shadow RAM
 
+
 ## Shadow RAM on a BBC Master 128
 
 ```
@@ -39,6 +40,15 @@ Some code for a BBC Master 128 to prototype double buffered rendering using Shad
 ;   D=0,X=1 - Display from main memory, Draw to shadow memory (&3000-&7FFF)
 ;   D=1,X=0 - Display from shadow memory, Draw to main memory (&3000-&7FFF)
 
+; MOS 4Kb RAM
+
+; Rom Select Register (ROMSEL) at &FE30
+;
+; b7   b6   b5   b4   b3   b2   b1   b0
+; RAM  0    0    0    PM3  PM2  PM1  PM0
+;
+; RAM (bit 7) : 1 - Map 4K MOS Ram into &8000-&8FFF
+; PM0-PM3     : Determine sideways rom/ram paged in.
 
 ```
 
@@ -46,11 +56,25 @@ Some code for a BBC Master 128 to prototype double buffered rendering using Shad
 Note 'available' means you can use it, but only if you are writing pure, non-portable assembler that doesn't use MOS rendering or language functions.
 
 ```
-Zero page &00-&8F
+ (&0000-&2FFF) 12Kb System RAM 	
+ (&3000-&7FFF) 20Kb Screen RAM 	
+ (&3000-&7FFF) 20kb Shadow RAM 	
+ (&8000-&BFFF) 64Kb Sideways RAM 	
+ (&C000-&DFFF)  8Kb MOS RAM 		
+ (&8000-&8FFF)  4Kb MOS RAM 		
+```
 
-Memory from &0400 to &07FF = &0400 (1,024) bytes (1kb)
-Memory from &0900 to &0CFF = &0400 (1,024) bytes (1kb)
-Memory from &0E00 to &2FFF = &2200 (8,704) bytes (8.5Kb)
+Total 128Kb RAM
+
+```
+
+Main memory from &0000-&2FFF (12Kb)
+	Zero page &00-&8F
+
+	Generally usable for assembler non-ROM dependent code:
+		Memory from &0400 to &07FF = &0400 (1,024) bytes (1kb)
+		Memory from &0900 to &0CFF = &0400 (1,024) bytes (1kb)
+		Memory from &0E00 to &2FFF = &2200 (8,704) bytes (8.5Kb)
 
 Vidmem from &3000-&7FFF is &5000 (20,480) bytes (20kb)
 Shadow from &3000-&7FFF is &5000 (20,480) bytes (20Kb)
@@ -84,3 +108,5 @@ Any data placed in Shadow/Video RAM CANT be accessed if used by a renderer, sinc
 ## References
 
 [New Advanced User Guide p162](http://www.msknight.com/bbc/manuals/new-advanced-user-guide.pdf)
+
+[BBC Master Information](http://www.cloud9.co.uk/james/BBCMicro/Documentation/Master.html)
